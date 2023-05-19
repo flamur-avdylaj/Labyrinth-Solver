@@ -1,0 +1,55 @@
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class LabyrinthSolver {
+    private static final int[][] DIRECTIONS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}}; // Right, Down, Left, Up
+
+    static class Cell {
+        int x, y;
+        Cell(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    public static boolean solve(int[][] maze) {
+        int n = maze.length;
+        int m = maze[0].length;
+        Queue<Cell> queue = new LinkedList<>();
+        boolean[][] visited = new boolean[n][m];
+
+        visited[0][0] = true;
+        queue.add(new Cell(0, 0));
+
+        while (!queue.isEmpty()) {
+            Cell cell = queue.poll();
+
+            // Found the end
+            if (cell.x == n-1 && cell.y == m-1) {
+                return true;
+            }
+
+            for (int[] direction : DIRECTIONS) {
+                int newX = cell.x + direction[0];
+                int newY = cell.y + direction[1];
+
+                if (newX >= 0 && newY >= 0 && newX < n && newY < m && !visited[newX][newY] && maze[newX][newY] == 1) {
+                    queue.add(new Cell(newX, newY));
+                    visited[newX][newY] = true;
+                }
+            }
+        }
+        return false; // No path found
+    }
+
+    public static void main(String[] args) {
+        int[][] maze = {
+                {1, 0, 0, 0},
+                {1, 1, 0, 1},
+                {0, 1, 0, 0},
+                {1, 1, 1, 1}
+        };
+        boolean pathExists = solve(maze);
+        System.out.println("Is there a path to the end? " + (pathExists ? "Yes" : "No"));
+    }
+}
